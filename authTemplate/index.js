@@ -3,7 +3,6 @@ import authRoute from "./routes/auth.routes.js";
 import { configDotenv } from "dotenv";
 import connectToMongoDB from "./db/connectToMongoDB.js";
 import cookieParser from "cookie-parser";
-
 import session from "express-session";
 import MongoStore from "connect-mongo";
 

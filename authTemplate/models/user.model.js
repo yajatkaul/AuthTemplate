@@ -24,32 +24,23 @@ const userSchema = new mongoose.Schema(
       required: true,
       minlength: 5,
     },
-    profilePic: {
-      type: String,
-      default: "",
-    },
     gender: {
       type: String,
       default: null,
       enum: ["Male", "Female"],
     },
-    bio: {
-      type: String,
-      default: "",
-    },
     verifiedEmail: {
       type: Boolean,
       default: false,
     },
-    verifiedAccount: {
-      type: Boolean,
-      default: false,
-    },
-    subscription: {
+    verificationToken: {
       type: String,
-      default: "Member",
-      enum: ["Member", "Pro"],
     },
+    verificationTokenExpiresAt: {
+      type: Date,
+    },
+    resetPasswordToken: String,
+    resetPasswordExpiresAt: Date,
   },
   { timestamps: true }
 );
