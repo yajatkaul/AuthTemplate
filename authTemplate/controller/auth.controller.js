@@ -28,7 +28,7 @@ export const signup = async (req, res) => {
 
     //If details are not correct then sends a error response
     if (result !== true) {
-      return res.status(400).json({ message: result.message });
+      return res.status(400).json({ error: result.error });
     }
 
     //Generate random token
@@ -58,7 +58,7 @@ export const signup = async (req, res) => {
   } catch (err) {
     //Incase there is an error
     console.log(err);
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -75,31 +75,31 @@ async function signupChecks({
   const emailCheck = await User.findOne({ email });
 
   if (userCheck) {
-    return { message: "Username taken" };
+    return { error: "Username taken" };
   }
 
   if (emailCheck) {
-    return { message: "Email is already in use" };
+    return { error: "Email is already in use" };
   }
 
   if (!userName || !password || !displayName || !confirmPassword || !email) {
-    return { message: "Please fill all fields" };
+    return { error: "Please fill all fields" };
   }
 
   if (userName.length < 5 || displayName.length < 5) {
-    return { message: "Names should be greater than 4 letters" };
+    return { error: "Names should be greater than 4 letters" };
   }
 
   if (password.length < 5) {
-    return { message: "Names should be greater than 4 letters" };
+    return { error: "Names should be greater than 4 letters" };
   }
 
   if (!isValidEmail(email)) {
-    return { message: "Invalid email format" };
+    return { error: "Invalid email format" };
   }
 
   if (password !== confirmPassword) {
-    return { message: "Passwords do not match" };
+    return { error: "Passwords do not match" };
   }
 
   return true;
@@ -115,7 +115,7 @@ function isValidEmail(email) {
 export const login = async (req, res) => {
   //Check if already logged in
   if (req.session.userId) {
-    return res.status(200).json({ message: "You are already logged in." });
+    return res.status(200).json({ error: "You are already logged in." });
   }
 
   //Request payload
@@ -158,10 +158,10 @@ export const login = async (req, res) => {
 export const logout = async (req, res) => {
   req.session.destroy((err) => {
     if (err) {
-      return res.status(500).json({ message: "Failed to logout" });
+      return res.status(500).json({ error: "Failed to logout" });
     }
     res.clearCookie("AuthCookie");
-    res.json({ message: "Logout successful" });
+    res.json({ result: "Logout successful" });
   });
 };
 
@@ -185,7 +185,7 @@ export const verifyEmail = async (req, res) => {
 
     await user.save();
 
-    return res.status(200).json({ ok: "Success" });
+    return res.status(200).json({ result: "Success" });
   } catch (err) {
     console.log("error in verifyEmail ", err);
     res.status(500).json({ error: "Internal Server Error" });
