@@ -10,9 +10,8 @@ import crypto from "crypto";
 //CREATING AN ACCOUNT FROM HERE
 export const signup = async (req, res) => {
   try {
-    const { displayName, userName, email, password, confirmPassword } =
-      req.body;
-
+    const { displayName, email, password, confirmPassword } = req.body;
+    console.log(req.body);
     //Salting and hashing the password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -20,7 +19,6 @@ export const signup = async (req, res) => {
     //Function to check if all the details are inputted correctly
     const result = await signupChecks({
       displayName,
-      userName,
       email,
       password,
       confirmPassword,
@@ -39,7 +37,6 @@ export const signup = async (req, res) => {
     //If it is able to pass every check create a new user
     const newUser = new User({
       displayName,
-      userName,
       email,
       password: hashedPassword,
       verificationToken,
@@ -63,30 +60,18 @@ export const signup = async (req, res) => {
 };
 
 //Function to check the details if they are correct or not
-async function signupChecks({
-  displayName,
-  userName,
-  email,
-  password,
-  confirmPassword,
-}) {
-  const userCheck = await User.findOne({ userName });
-
+async function signupChecks({ displayName, email, password, confirmPassword }) {
   const emailCheck = await User.findOne({ email });
-
-  if (userCheck) {
-    return { error: "Username taken" };
-  }
 
   if (emailCheck) {
     return { error: "Email is already in use" };
   }
 
-  if (!userName || !password || !displayName || !confirmPassword || !email) {
+  if (!password || !displayName || !confirmPassword || !email) {
     return { error: "Please fill all fields" };
   }
 
-  if (userName.length < 5 || displayName.length < 5) {
+  if (displayName.length < 5) {
     return { error: "Names should be greater than 4 letters" };
   }
 
@@ -119,14 +104,14 @@ export const login = async (req, res) => {
   }
 
   //Request payload
-  const { userName, password } = req.body;
+  const { email, password } = req.body;
 
-  if (!userName || !password) {
+  if (!email || !password) {
     return res.status(400).json({ error: "Please fill all the fields" });
   }
 
   //Search for the user and gets the details
-  const user = await User.findOne({ userName });
+  const user = await User.findOne({ email });
 
   //Decrypt and compare the password -- returns true or fals
   const isPasswordCorrect = await bcrypt.compare(

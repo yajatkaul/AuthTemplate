@@ -8,12 +8,6 @@ const userSchema = new mongoose.Schema(
       required: true,
       minlength: 5,
     },
-    userName: {
-      type: String,
-      required: true,
-      minlength: 5,
-      unique: true,
-    },
     email: {
       type: String,
       required: true,
@@ -24,10 +18,10 @@ const userSchema = new mongoose.Schema(
       required: true,
       minlength: 5,
     },
-    gender: {
+    role: {
       type: String,
-      default: null,
-      enum: ["Male", "Female"],
+      default: "Member",
+      enum: ["Member", "Employee", "Admin"],
     },
     verifiedEmail: {
       type: Boolean,
